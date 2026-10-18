@@ -232,3 +232,113 @@ body.physical-mode .site-footer{
   body.physical-mode .manual-score-row{padding:0 9px}
   body.physical-mode .player-chip{min-width:88px}
 }
+
+
+/* Scoreblock columns only for real-dice mode. display:contents preserves the
+   exact existing single-column scorecard behavior on iPhones. */
+body.physical-mode .score-panel{display:contents}
+
+@media (min-width:700px) and (min-height:620px){
+  body.physical-mode .shell{
+    width:min(calc(100% - 56px),1160px);
+    height:100dvh;
+    min-height:620px;
+    padding-top:max(16px,env(safe-area-inset-top));
+    padding-bottom:max(9px,env(safe-area-inset-bottom));
+  }
+  body.physical-mode .masthead{
+    margin-bottom:9px;
+  }
+  body.physical-mode .masthead h1{font-size:32px}
+  body.physical-mode .game-topline{
+    min-height:21px;
+    margin-bottom:7px;
+  }
+  body.physical-mode .player-strip{
+    gap:9px;
+    margin-bottom:2px;
+    padding-bottom:5px;
+  }
+  body.physical-mode .player-chip{
+    min-width:126px;
+    max-width:172px;
+    min-height:55px;
+    padding:9px 13px 8px;
+    border-radius:13px;
+  }
+  body.physical-mode .player-chip .chip-name{font-size:12px}
+  body.physical-mode .player-chip .chip-score{font-size:21px}
+  body.physical-mode .player-chip .chip-marker{font-size:9px}
+  body.physical-mode .score-section.physical-score{
+    min-height:0;
+    margin-top:7px;
+  }
+  body.physical-mode .score-titlebar{
+    min-height:34px;
+    margin-bottom:9px;
+  }
+  body.physical-mode .score-titlebar h2{font-size:22px}
+  body.physical-mode .score-total strong{font-size:26px}
+  body.physical-mode .scorecard{
+    flex:1 1 auto;
+    min-height:405px;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    column-gap:14px;
+    overflow:visible;
+    border:0;
+    background:transparent;
+    border-radius:0;
+    box-shadow:none;
+  }
+  body.physical-mode .score-panel{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    min-height:0;
+    border:1px solid #e9edf4;
+    border-radius:16px;
+    overflow:hidden;
+    background:#fff;
+    box-shadow:0 6px 22px #22395606;
+  }
+  body.physical-mode .score-panel .score-row{
+    flex:1 1 0;
+    min-height:0;
+  }
+  body.physical-mode .score-panel .section-bar{
+    min-height:27px;
+    padding:6px 15px;
+    font-size:10px;
+  }
+  body.physical-mode .score-panel .section-bar span:last-child{font-size:10px}
+  body.physical-mode .score-panel .manual-score-row{padding:0 16px}
+  body.physical-mode .score-panel .manual-score-row .cat-name{font-size:15px}
+  body.physical-mode .score-panel .manual-score-row .manual-result{font-size:18px}
+  body.physical-mode .score-panel .summary-row{
+    min-height:32px;
+    padding:6px 15px;
+    font-size:12px;
+  }
+  body.physical-mode .score-panel .summary-row strong{font-size:15px}
+  body.physical-mode .score-panel .summary-row.final-row{
+    min-height:39px;
+    padding:8px 15px;
+    font-size:13px;
+  }
+  body.physical-mode .score-panel .summary-row.final-row strong{font-size:21px}
+  body.physical-mode .site-footer{
+    padding:6px 0 2px!important;
+    margin:0;
+  }
+}
+
+@media (min-width:700px) and (min-height:620px) and (max-height:710px){
+  body.physical-mode .shell{padding-top:max(10px,env(safe-area-inset-top))}
+  body.physical-mode .masthead{margin-bottom:5px}
+  body.physical-mode .player-chip{min-height:49px;padding:6px 11px}
+  body.physical-mode .score-titlebar{margin-bottom:5px}
+  body.physical-mode .score-panel .section-bar{min-height:23px;padding:4px 13px}
+  body.physical-mode .score-panel .summary-row{min-height:27px;padding:4px 13px}
+  body.physical-mode .score-panel .summary-row.final-row{min-height:32px;padding:5px 13px}
+}

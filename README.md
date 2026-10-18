@@ -24,7 +24,7 @@ Ein modernes, mobiloptimiertes Kniffel-Spiel – ohne Anmeldung, Werbung, Framew
 ## Features
 
 - Zwei Spielmodi: digitale Würfel oder digitaler Kniffel-Block für echte Würfel (ohne Würfelwerteingabe)
-- Kompakte, bildschirmfüllende Punkteblock-Ansicht für echte Würfel: alle 13 Kategorien, Summen, 63er-Bonus und Spielerübersicht auf üblichen iPhones ohne Scrollen; kleine Displays bleiben scrollbar
+- Bildschirmfüllender Punkteblock für echte Würfel: auf iPhones eine kompakte Spalte, auf Tablets im Hoch- und Querformat zwei nebeneinanderliegende Blöcke mit allen 13 Kategorien, Summen, Bonus und Spielerübersicht. Kleine Viewports bleiben scrollbar.
 - Pass-and-play für 1–8 Personen auf demselben Smartphone/Tablet
 - Vorschau aller möglichen Punkte und Extra-Kniffel vor dem Eintragen
 - Punktezettel mit automatischen Summen, Bonus-Fortschritt, Spielerwechsel

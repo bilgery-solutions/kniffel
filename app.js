@@ -184,24 +184,30 @@ function renderDice() {
     const player = visiblePlayer();
     const totals = R.totals(player);
     const canPreview = isPlayersTurn() && game.rollCount > 0;
-    document.querySelector('.score-section').classList.toggle('physical-score', game.mode === 'physical');
-    const upperPct = Math.min(100, Math.max(0, totals.upper/63*100));
-    const upper = R.CATEGORIES.filter(c => c.section === 'upper').map(c => scoreRow(c,player,canPreview)).join('');
-    const lower = R.CATEGORIES.filter(c => c.section === 'lower').map(c => scoreRow(c,player,canPreview)).join('');
-    $('score-heading').textContent = game.mode === 'physical'
+    const physical = game.mode === 'physical';
+    document.querySelector('.score-section').classList.toggle('physical-score', physical);
+    const upperPct = Math.min(100, Math.max(0, totals.upper / 63 * 100));
+    const upper = R.CATEGORIES.filter(c => c.section === 'upper').map(c => scoreRow(c, player, canPreview)).join('');
+    const lower = R.CATEGORIES.filter(c => c.section === 'lower').map(c => scoreRow(c, player, canPreview)).join('');
+    $('score-heading').textContent = physical
       ? (game.viewIndex === game.activeIndex ? `Am Zug: ${player.name}` : `${player.name}s Punkte`)
       : (game.viewIndex === game.activeIndex ? 'Punkteblatt' : `${player.name}s Punkteblatt`);
     $('current-total').textContent = String(totals.total);
-    $('scorecard').innerHTML = `
+    const upperMarkup = `
       <div class="section-bar"><span>OBERER BLOCK</span><span>ZAHLEN SAMMELN</span></div>${upper}
       <div class="summary-row"><span>Zwischensumme</span><strong>${totals.upper}</strong></div>
-      <div class="summary-row bonus-row"><div><span>Bonus · ab 63 Punkten</span><span class="bonus-progress"><i style="width:${upperPct}%"></i></span></div><strong>${totals.bonus ? '+35' : totals.upper+'/63'}</strong></div>
+      <div class="summary-row bonus-row"><div><span>Bonus · ab 63 Punkten</span><span class="bonus-progress"><i style="width:${upperPct}%"></i></span></div><strong>${totals.bonus ? '+35' : totals.upper+'/63'}</strong></div>`;
+    const lowerMarkup = `
       <div class="section-bar"><span>UNTERER BLOCK</span><span>KOMBINATIONEN</span></div>${lower}
       ${totals.extra ? `<div class="summary-row bonus-row"><span>Zusätzliche Kniffel · ${player.bonusKniffels} × 50</span><strong>+${totals.extra}</strong></div>` : ''}
       <div class="summary-row"><span>Unterer Block${totals.extra ? ' inkl. Extra-Kniffel' : ''}</span><strong>${totals.lower + totals.extra}</strong></div>
       <div class="summary-row final-row"><span>Gesamtpunkte</span><strong>${totals.total}</strong></div>`;
+    // On phones the panels visually dissolve back into the classic single
+    // scorecard. On iPads each panel becomes its own full-height column.
+    $('scorecard').innerHTML = physical
+      ? `<div class="score-panel score-panel-upper">${upperMarkup}</div><div class="score-panel score-panel-lower">${lowerMarkup}</div>`
+      : upperMarkup + lowerMarkup;
   }
-
   function renderDock() {
     const button = $('action-button'); const label = $('dock-summary');
     button.disabled = false;
