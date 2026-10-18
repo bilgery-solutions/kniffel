@@ -21,6 +21,10 @@ Ein modernes, mobiloptimiertes Kniffel-Spiel – ohne Anmeldung, Werbung, Framew
 - **Zusatz-Kniffel:** Nach einem in der Kniffel-Kategorie eingetragenen 50-Punkte-Kniffel zählt jeder weitere Kniffel +50 Punkte. Ein noch freies Feld darf mit seiner Höchstpunktzahl belegt werden. Diese Umsetzung orientiert sich an der [aktuellen Schmidt-Spiele-Anleitung](https://www.schmidtspiele.de/files/Produkte/4/49203%20-%20Kniffel%C2%AE/49203_Kniffel_DE.pdf), nicht an der abweichenden Meisterschaftsregel.
 - Ein ungültiger Kategorieeintrag ergibt 0 Punkte; ein 5er-Kniffel ist ohne Bonus-/Jokerregel **kein** Full House.
 
+### Offene Felder auf einen Blick
+
+Offene Felder bleiben dunkel und zeigen eine kurze Erklärung wie „4 in Folge“ oder „mind. 3 gleiche“. Bereits eingetragene Felder (auch gestrichene mit 0 Punkten) werden inklusive Kategoriebezeichnung und Punktezahl grau dargestellt. Die Hinweise sind bewusst einzeilig, damit der Punkteblock auf iPhone und iPad nicht höher wird.
+
 ## Features
 
 - Zwei Spielmodi: digitale Würfel oder digitaler Kniffel-Block für echte Würfel (ohne Würfelwerteingabe)

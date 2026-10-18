@@ -6,6 +6,14 @@
   const NAME_KEY = 'bilgery-kniffel-last-names-v1';
   const MODE_KEY = 'bilgery-kniffel-last-mode-v1';
   const MAX_PLAYERS = 8;
+  // Concise hints focused on what is still needed, not how to use the app.
+  const CATEGORY_NEEDS = Object.freeze({
+    ones:'1er sammeln', twos:'2er sammeln', threes:'3er sammeln',
+    fours:'4er sammeln', fives:'5er sammeln', sixes:'6er sammeln',
+    threeKind:'mind. 3 gleiche', fourKind:'mind. 4 gleiche',
+    fullHouse:'3 + 2 gleiche', smallStraight:'4 in Folge',
+    largeStraight:'5 in Folge', kniffel:'5 gleiche', chance:'Augensumme'
+  });
   const PIP_POSITIONS = { 1:[5], 2:[1,9], 3:[1,5,9], 4:[1,3,7,9], 5:[1,3,5,7,9], 6:[1,3,4,6,7,9] };
   const $ = id => document.getElementById(id);
   const esc = value => String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
@@ -158,11 +166,9 @@ function renderDice() {
     const value=player.scores[category.key];
     const scored=value!==null;
     const playable=isPlayersTurn() && !scored;
-    const detail=category.number ? `${category.number} × Anzahl`
-      : ({fullHouse:'25 Punkte',smallStraight:'30 Punkte',largeStraight:'40 Punkte',kniffel:'50 Punkte'})[category.key]
-        || ((category.key==='chance'||category.key==='threeKind'||category.key==='fourKind')?'Augensumme':'');
-    return `<div class="score-row"><button type="button" class="manual-score-row${scored?' scored':''}${value===0?' zero':''}${!playable?' disabled-view':''}" data-category="${category.key}" ${playable?'':'disabled'} aria-label="${esc(category.name)}: ${scored?value+' Punkte eingetragen':'Punkte eintragen'}">
-       <span class="manual-category"><span class="cat-name">${esc(category.name)}</span><span class="category-detail">${detail}</span></span>
+    const detail = CATEGORY_NEEDS[category.key];
+    return `<div class="score-row${scored?' completed':' open'}"><button type="button" class="manual-score-row${scored?' scored':''}${value===0?' zero':''}${!playable?' disabled-view':''}" data-category="${category.key}" ${playable?'':'disabled'} aria-label="${esc(category.name)}: ${scored?value+' Punkte eingetragen':'Noch offen, '+detail+', Punkte eintragen'}">
+       <span class="manual-category"><span class="cat-name">${esc(category.name)}</span>${scored?'':`<span class="category-detail">${esc(detail)}</span>`}</span>
        <span class="manual-result">${scored?value:'+'}${!scored?'<span class="chevron" aria-hidden="true">›</span>':''}</span>
        </button></div>`;
   }
@@ -175,8 +181,9 @@ function renderDice() {
     const potential = preview && !scored ? R.scoreForTurn(category.key, game.dice, player.scores) : null;
     const className = scored ? `recorded${value===0?' crossed':''}` : selected ? 'selected' : potential===null ? '' : potential>0 ? 'available' : 'preview-zero';
     const shown = scored ? String(value) : potential !== null ? `${potential}<small>↗</small>` : '–';
-    const accessible = `${category.name}: ${scored ? value+' Punkte eingetragen' : potential === null ? 'noch leer' : potential+' Punkte möglich'}`;
-    return `<div class="score-row"><div><span class="cat-name">${category.name}</span></div>
+    const detail = CATEGORY_NEEDS[category.key];
+    const accessible = `${category.name}: ${scored ? value+' Punkte eingetragen' : potential === null ? 'noch offen, '+detail : potential+' Punkte möglich, '+detail}`;
+    return `<div class="score-row${scored?' completed':' open'}"><div class="score-category"><span class="cat-name">${esc(category.name)}</span>${scored?'':`<span class="score-need">${esc(detail)}</span>`}</div>
       <button type="button" class="score-choice ${className}" data-category="${category.key}" ${!preview||scored ? 'disabled' : ''} aria-label="${accessible}" aria-pressed="${!!selected}">${shown}</button></div>`;
   }
 

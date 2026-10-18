@@ -342,3 +342,69 @@ body.physical-mode .score-panel{display:contents}
   body.physical-mode .score-panel .summary-row{min-height:27px;padding:4px 13px}
   body.physical-mode .score-panel .summary-row.final-row{min-height:32px;padding:5px 13px}
 }
+
+
+/* The eye should go to unfinished categories first, in BOTH modes.
+   Completed categories recede as a unit: the name AND the points. */
+.score-row.open .cat-name{color:var(--ink);font-weight:745}
+.score-row.completed .cat-name{color:#a7b2c2!important;font-weight:550!important}
+.score-row.completed .score-choice.recorded,
+.score-row.completed .score-choice.recorded.crossed{color:#a7b2c2!important}
+body.physical-mode .score-row.completed .manual-result{color:#a7b2c2!important}
+body.physical-mode .score-row.completed .manual-score-row{color:#a7b2c2!important}
+body.physical-mode .score-row.completed .manual-score-row .cat-name{color:#a7b2c2!important}
+
+/* Compact, one-line reminders for open fields. No added row height:
+   the scorecard continues to fit on one phone/tablet screen. */
+.score-row .score-category{
+  min-width:0;
+  flex:1 1 auto;
+  display:flex;
+  align-items:baseline;
+  gap:6px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.score-row .score-category .cat-name{flex:none}
+.score-row .score-need{
+  min-width:0;
+  font-size:10px;
+  font-weight:500;
+  color:#8392a8;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+body.physical-mode .manual-score-row .manual-category{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+  flex:1 1 auto;
+  overflow:hidden;
+  white-space:nowrap;
+}
+body.physical-mode .manual-score-row .manual-category .cat-name{flex:0 0 auto}
+body.physical-mode .manual-score-row:not(.scored) .category-detail{
+  display:block;
+  flex:0 1 auto;
+  min-width:0;
+  font-size:10px;
+  font-weight:520;
+  line-height:1.15;
+  color:#8392a8;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+body.physical-mode .manual-score-row .manual-result{flex:0 0 auto}
+@media (max-width:360px){
+  .score-row .score-need{display:none}
+  body.physical-mode .manual-score-row .manual-category{gap:5px}
+  body.physical-mode .manual-score-row:not(.scored) .category-detail{font-size:9px}
+}
+@media (min-width:700px) and (min-height:620px){
+  body.physical-mode .manual-score-row:not(.scored) .category-detail{font-size:11px}
+  body.physical-mode .manual-score-row .manual-category{gap:10px}
+}
