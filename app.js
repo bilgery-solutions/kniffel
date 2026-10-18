@@ -79,6 +79,7 @@
   }
 
   function renderSetup() {
+    document.body.classList.remove('physical-mode');
     $('setup-screen').hidden = false;
     $('game-screen').hidden = true;
     $('action-dock').hidden = true;
@@ -228,6 +229,7 @@ function renderDice() {
 
   function render() {
     if (!game) { renderSetup(); return; }
+    document.body.classList.toggle('physical-mode',game.mode==='physical');
     $('setup-screen').hidden = true; $('game-screen').hidden = false; $('action-dock').hidden = game.mode === 'physical'; $('new-button').hidden = false;
     const completed = game.players.reduce((sum,player)=>sum+R.totals(player).filled,0);
     const round = Math.min(13,Math.floor(completed/game.players.length)+1);
@@ -307,8 +309,9 @@ function keep(index) {
     const key=manualCategory;
     if (!isPlayersTurn() || game.mode!=='physical' || !key || currentPlayer().scores[key]!==null) return;
     if (bonus && currentPlayer().scores.kniffel!==50) return;
+    const emptyInput = !bonus && typeof rawPoints === 'string' && rawPoints.trim() === '';
     const points=bonus?maxPhysicalScore(key):Number(rawPoints);
-    if (!validManualPoints(key,points)) {
+    if (emptyInput || !validManualPoints(key,points)) {
       const error=$('manual-error');
       if(error){error.hidden=false;error.textContent='Bitte eine gültige Punktzahl eingeben.';}
       return;
