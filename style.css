@@ -77,3 +77,6 @@ body.modal-open{overflow:hidden}
 .manual-bonus-summary{margin-top:12px;border-radius:12px;background:#ecf5ff;padding:12px;color:#286bcd;font-size:13px;font-weight:690}
 @media(max-height:740px){.mode-setup{margin-top:12px}.mode-option{min-height:97px;padding:11px}.mode-choice-head{margin-bottom:6px}.manual-score-row{min-height:47px}}
 @media(max-width:370px){.mode-options{gap:7px}.mode-option{padding:11px}.manual-score-row{padding:10px 12px}}
+
+/* No sticky footer spacing needed in scorekeeper-only mode. */
+.physical-mode .game-screen~.site-footer{padding-bottom:max(24px,env(safe-area-inset-bottom))}
