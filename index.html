@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f9fc">
+  <meta name="description" content="Kniffel zu zweit oder mit Freunden. Fünf Würfel, drei Würfe, eine clevere Entscheidung. Kostenlos, ohne Anmeldung, auch offline.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Kniffel">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./style.css">
+  <title>Kniffel</title>
+  <script src="./rules.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <h1>Kniffel<span class="brand-period" aria-hidden="true">.</span></h1>
+      <div class="header-actions">
+        <button type="button" class="icon-button" id="rules-button" aria-label="Spielregeln öffnen" title="Spielregeln">?</button>
+        <button type="button" class="new-button" id="new-button" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Neu
+        </button>
+      </div>
+    </header>
+
+    <section class="setup-screen" id="setup-screen" aria-labelledby="setup-title">
+      <div class="intro-visual" aria-hidden="true"><span class="hero-die hero-one"><i></i><i></i><i></i><i></i><i></i></span><span class="hero-die hero-two"><i></i><i></i><i></i></span></div>
+      <div class="intro-copy">
+        <span class="eyebrow">DAS WÜRFELSPIEL</span>
+        <h2 id="setup-title">Ein Wurf. Viele Möglichkeiten.</h2>
+        <p>Fünf Würfel, bis zu drei Versuche und jede Menge Entscheidungen. Wer holt sich die meisten Punkte?</p>
+      </div>
+      <section class="setup-card" aria-label="Spiel vorbereiten">
+        <div class="setup-heading"><h3>Wer spielt mit?</h3><span id="player-count">2 Spieler</span></div>
+        <div id="player-inputs" class="player-inputs"></div>
+        <button type="button" class="add-player" id="add-player"><span aria-hidden="true">+</span> Person hinzufügen</button>
+        <p class="setup-tip">Ihr spielt abwechselnd auf diesem Gerät. Bis zu 8 Personen.</p>
+      </section>
+      <button class="primary-button setup-start" id="start-button" type="button">Spiel starten <span aria-hidden="true">→</span></button>
+      <button class="history-link" id="setup-history" type="button">Bisherige Ergebnisse ansehen <span aria-hidden="true">↗</span></button>
+    </section>
+
+    <section class="game-screen" id="game-screen" hidden aria-label="Kniffel-Partie">
+      <div class="game-topline"><span id="round-label" class="eyebrow">RUNDE 1 VON 13</span><button id="undo-button" type="button" class="text-button" hidden>↶ Letzten Zug zurück</button></div>
+      <div class="player-strip" id="player-strip" aria-label="Spielerübersicht"></div>
+      <section class="play-card" aria-labelledby="turn-title">
+        <div class="turn-topline"><div><p class="turn-caption" id="turn-caption">AM ZUG</p><h2 id="turn-title">Spieler 1</h2></div><div class="throw-count"><strong id="throw-number">0<span>/3</span></strong><small>WÜRFE</small></div></div>
+        <div id="dice-row" class="dice-row" role="group" aria-label="Fünf Würfel"></div>
+        <div class="dice-hint" id="dice-hint" aria-live="polite">Bereit für deinen ersten Wurf?</div>
+        <div class="throw-progress" id="throw-progress" aria-hidden="true"><i></i><i></i><i></i></div>
+      </section>
+      <section class="score-section" aria-labelledby="score-heading">
+        <div class="score-titlebar"><div><span class="eyebrow">DEIN SPIELBLOCK</span><h2 id="score-heading">Punkteblatt</h2></div><div class="score-total"><strong id="current-total">0</strong><span>PUNKTE</span></div></div>
+        <div id="scorecard" class="scorecard"></div>
+      </section>
+      <div class="game-bottom-space"></div>
+    </section>
+
+    <footer class="site-footer"><a href="https://bilgery-solutions.de" target="_blank" rel="noopener noreferrer" aria-label="Bilgery Solutions Website öffnen"><strong>BILGERY</strong> SOLUTIONS</a></footer>
+  </main>
+
+  <div class="action-dock" id="action-dock" hidden><div class="dock-inner"><div class="dock-summary" id="dock-summary" aria-live="polite">Würfle, um zu starten.</div><button class="primary-button dock-button" id="action-button" type="button">Würfeln <span aria-hidden="true">↻</span></button></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <div class="modal-backdrop" id="modal" hidden>
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="dialog-top"><span class="dialog-kicker" id="modal-kicker">KNIFFEL</span><button class="modal-close" type="button" id="modal-close" aria-label="Schließen">×</button></div>
+      <div id="modal-content"></div>
+    </section>
+  </div>
+</body>
+</html>
