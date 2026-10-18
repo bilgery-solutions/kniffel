@@ -42,6 +42,21 @@
         <button type="button" class="add-player" id="add-player"><span aria-hidden="true">+</span> Person hinzufügen</button>
         <p class="setup-tip">Ihr spielt abwechselnd auf diesem Gerät. Bis zu 8 Personen.</p>
       </section>
+      <section class="mode-setup" aria-labelledby="mode-heading">
+        <h3 class="eyebrow" id="mode-heading">WIE MÖCHTET IHR WÜRFELN?</h3>
+        <div class="mode-options" id="mode-options" role="radiogroup" aria-labelledby="mode-heading">
+          <label class="mode-option selected">
+            <input type="radio" name="mode" value="digital" checked>
+            <span class="mode-choice-head"><span class="mode-icon" aria-hidden="true">⚄</span><span class="mode-tick" aria-hidden="true"></span></span>
+            <strong>Digital</strong><small>Direkt in der App würfeln</small>
+          </label>
+          <label class="mode-option">
+            <input type="radio" name="mode" value="physical">
+            <span class="mode-choice-head"><span class="mode-icon" aria-hidden="true">⚅</span><span class="mode-tick" aria-hidden="true"></span></span>
+            <strong>Eigene Würfel</strong><small>Mit echten Würfeln spielen</small>
+          </label>
+        </div>
+      </section>
       <button class="primary-button setup-start" id="start-button" type="button">Spiel starten <span aria-hidden="true">→</span></button>
       <button class="history-link" id="setup-history" type="button">Bisherige Ergebnisse ansehen <span aria-hidden="true">↗</span></button>
     </section>
@@ -53,6 +68,12 @@
         <div class="turn-topline"><div><p class="turn-caption" id="turn-caption">AM ZUG</p><h2 id="turn-title">Spieler 1</h2></div><div class="throw-count"><strong id="throw-number">0<span>/3</span></strong><small>WÜRFE</small></div></div>
         <div id="dice-row" class="dice-row" role="group" aria-label="Fünf Würfel"></div>
         <div class="dice-hint" id="dice-hint" aria-live="polite">Bereit für deinen ersten Wurf?</div>
+        <div class="manual-input" id="manual-input" hidden>
+          <div class="manual-heading"><span>AUGENZAHL EINTRAGEN</span><button type="button" id="manual-clear">Alle löschen</button></div>
+          <div class="manual-choices" id="manual-choices" role="group" aria-label="Augenzahl für den gewählten Würfel">
+            <button type="button" class="manual-choice" data-face="1" aria-label="1 eintragen">1</button><button type="button" class="manual-choice" data-face="2" aria-label="2 eintragen">2</button><button type="button" class="manual-choice" data-face="3" aria-label="3 eintragen">3</button><button type="button" class="manual-choice" data-face="4" aria-label="4 eintragen">4</button><button type="button" class="manual-choice" data-face="5" aria-label="5 eintragen">5</button><button type="button" class="manual-choice" data-face="6" aria-label="6 eintragen">6</button>
+          </div>
+        </div>
         <div class="throw-progress" id="throw-progress" aria-hidden="true"><i></i><i></i><i></i></div>
       </section>
       <section class="score-section" aria-labelledby="score-heading">

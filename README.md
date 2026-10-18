@@ -6,8 +6,10 @@ Ein modernes, mobiloptimiertes Kniffel-Spiel – ohne Anmeldung, Werbung, Framew
 
 1. Unter **https://bilgery-solutions.github.io/kniffel/** starten (nach Aktivierung von GitHub Pages).
 2. Zwischen einer und acht Personen eintragen; alle spielen abwechselnd auf einem Gerät.
-3. Bis zu dreimal würfeln und einzelne Würfel durch Antippen behalten.
-4. Eine der 13 Kategorien wählen und die Punkte durch **Eintragen** bestätigen. Einträge können bis zum nächsten Wurf zurückgenommen werden.
+3. **Würfelmodus wählen:**
+   - **Digital:** Bis zu dreimal in der App würfeln und Würfel durch Antippen behalten.
+   - **Eigene Würfel:** Mit fünf echten Würfeln am Tisch bis zu dreimal werfen. Anschließend die fünf endgültigen Augenzahlen in der App eintragen; die App errechnet die Punkte automatisch. Ein Würfel lässt sich jederzeit durch Antippen korrigieren, und **Alle löschen** setzt die Eingabe zurück.
+4. Eine der 13 Kategorien wählen und die Punkte durch **Eintragen** bestätigen. Einträge können zurückgenommen werden, solange die nächste Person noch keine Würfelwerte eingegeben bzw. noch nicht digital gewürfelt hat.
 5. Nach 13 Zügen pro Person gewinnt der höchste Punktestand.
 
 ### Regeln
@@ -21,6 +23,7 @@ Ein modernes, mobiloptimiertes Kniffel-Spiel – ohne Anmeldung, Werbung, Framew
 
 ## Features
 
+- Zwei Spielmodi: digitales Würfeln oder automatische Punktewertung mit eigenen physischen Würfeln
 - Pass-and-play für 1–8 Personen auf demselben Smartphone/Tablet
 - Vorschau aller möglichen Punkte und Extra-Kniffel vor dem Eintragen
 - Punktezettel mit automatischen Summen, Bonus-Fortschritt, Spielerwechsel

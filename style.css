@@ -12,3 +12,34 @@
 .modal-backdrop{position:fixed;inset:0;z-index:40;display:flex;justify-content:center;align-items:center;background:#1c2a409c;padding:20px;-webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px)}.dialog{width:min(100%,385px);max-height:min(85svh,730px);overflow-y:auto;border-radius:25px;background:#fff;padding:22px;box-shadow:0 20px 65px #0d1b3340;overscroll-behavior:contain}.dialog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.dialog-kicker{font-size:10px;letter-spacing:.12em;font-weight:790;color:var(--blue)}.modal-close{display:grid;place-items:center;width:31px;height:31px;border:0;border-radius:50%;background:#f1f3f7;font-size:24px;line-height:1;color:#66758a}.dialog h2{font-size:27px;line-height:1.13;letter-spacing:-.052em;margin:0 0 11px}.dialog p{color:#77879b;line-height:1.6;font-size:13px;margin:0 0 15px}.dialog h3{font-size:14px;margin:20px 0 8px}.dialog .primary-button{width:100%;margin-top:18px}.dialog .secondary-button{border:0;background:transparent;color:#8291a6;font-size:13px;font-weight:650;min-height:42px;width:100%;margin-top:6px}.rule-list{padding-left:19px;font-size:13px;color:#65788f;line-height:1.7}.rule-list li{margin-bottom:8px}.dialog-note{font-size:11px!important;background:#f3f7fe;padding:12px;border-radius:13px}.dialog-link{font-size:12px;color:var(--blue);text-decoration:none}.end-spark{font-size:31px;margin:0 0 12px;color:var(--blue)}.results-list{display:grid;gap:8px;margin:18px 0}.result-item{display:flex;align-items:center;justify-content:space-between;background:#f6f8fc;padding:12px;border-radius:12px;gap:8px}.result-item.winner{background:#eaf3ff}.result-item .rank{width:27px;font-size:13px;font-weight:760;color:#8797ab}.result-item .result-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:680;font-size:13px}.result-item .result-score{font-size:17px;font-weight:770}.result-item small{font-size:10px;font-weight:500;color:#8595a9}.history-empty{text-align:center;padding:23px 5px;color:#9ba8b8}.stats-table{width:100%;border-collapse:collapse;font-size:12px}.stats-table th{color:#99a6b8;text-align:right;font-size:10px;font-weight:700;padding:10px 5px}.stats-table th:first-child{text-align:left}.stats-table td{border-top:1px solid #e9edf3;padding:11px 5px;text-align:right;font-variant-numeric:tabular-nums}.stats-table td:first-child{text-align:left;font-weight:690;max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.recent-result{display:flex;gap:8px;justify-content:space-between;border-top:1px solid #edf0f5;padding:9px 0;font-size:12px}.recent-result span:last-child{color:#8d9bad;font-size:11px;flex-shrink:0}
 @media(min-width:620px){.shell{padding-top:45px}.intro-visual{height:156px}.masthead{margin-bottom:32px}.game-bottom-space{height:100px}}@media(max-height:740px){.masthead{margin-bottom:14px}.intro-visual{height:96px;margin-bottom:9px}.intro-copy{margin-bottom:15px}.intro-copy h2{font-size:25px}.setup-card{padding:16px}.setup-start{margin-top:12px}.play-card{padding-top:13px;padding-bottom:10px}.dice-row{margin-top:16px}.score-section{margin-top:15px}}@media(max-width:370px){.shell{width:calc(100% - 24px)}.play-card{padding:13px 12px}.dice-row{gap:5px}.die-button{padding:7px;border-radius:11px}.score-row{padding-left:12px}.score-choice{min-width:53px}.score-row .cat-name{font-size:12px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 body.modal-open{overflow:hidden}
+
+/* Dice mode selection on the welcome screen */
+.mode-setup{margin-top:18px}
+.mode-setup h3{margin:0 0 10px}
+.mode-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mode-option{display:flex;flex-direction:column;position:relative;min-width:0;min-height:105px;padding:13px;border:1.5px solid #e5eaf2;border-radius:16px;background:#fff;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.mode-option input{position:absolute;opacity:0;width:1px;height:1px;top:15px;right:15px}
+.mode-option.selected{border-color:#84aff4;background:#f1f6ff;box-shadow:0 0 0 1px #dceaff}
+.mode-option:focus-within{outline:2px solid #7caff8;outline-offset:2px}
+.mode-choice-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.mode-icon{font-size:22px;line-height:1;color:#54789c}
+.mode-tick{display:block;width:15px;height:15px;border:1.5px solid #ced7e4;border-radius:50%;background:#fff}
+.mode-option.selected .mode-tick{border:4.5px solid var(--blue)}
+.mode-option strong{font-size:13px;letter-spacing:-.015em;font-weight:740;color:#273d59}
+.mode-option small{font-size:10px;line-height:1.4;color:#8796ab;margin-top:3px}
+.mode-option.selected small{color:#6a8abc}
+/* Physical dice mode: only the final five results are entered, then scoring is automatic. */
+.die-button.manual-die{cursor:pointer}
+.die-button.manual-die.editing{border-color:var(--blue);background:#eef5ff;box-shadow:0 0 0 2px #bbd5ff,0 4px 0 #dae7fb}
+.die-button.manual-die.editing .pip{background:var(--blue)}
+.die-button.manual-die:disabled{cursor:default}
+.manual-input{border-top:1px solid #eef2f7;margin-top:15px;padding-top:13px}
+.manual-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.manual-heading span{font-size:10px;font-weight:760;color:#8291a5;letter-spacing:.07em}
+.manual-heading button{border:0;background:none;padding:5px 0;color:#7391b9;font-size:11px;font-weight:630}
+.manual-heading button:disabled{opacity:.35}
+.manual-choices{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin-top:8px}
+.manual-choice{height:46px;min-width:0;border-radius:11px;border:1px solid #e0e8f4;background:#f2f6fd;color:#286cbd;font-size:19px;font-weight:740;box-shadow:0 2px 0 #edf1f7;font-variant-numeric:tabular-nums}
+.manual-choice:active:not(:disabled){background:#deecff}
+@media(max-height:740px){.mode-setup{margin-top:12px}.mode-option{min-height:93px;padding:11px}.mode-choice-head{margin-bottom:5px}.manual-input{margin-top:10px;padding-top:9px}}
+@media(max-width:370px){.mode-options{gap:7px}.mode-option{padding:10px}.manual-choices{gap:5px}.manual-choice{height:43px}}
