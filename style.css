@@ -28,18 +28,52 @@ body.modal-open{overflow:hidden}
 .mode-option strong{font-size:13px;letter-spacing:-.015em;font-weight:740;color:#273d59}
 .mode-option small{font-size:10px;line-height:1.4;color:#8796ab;margin-top:3px}
 .mode-option.selected small{color:#6a8abc}
-/* Physical dice mode: only the final five results are entered, then scoring is automatic. */
-.die-button.manual-die{cursor:pointer}
-.die-button.manual-die.editing{border-color:var(--blue);background:#eef5ff;box-shadow:0 0 0 2px #bbd5ff,0 4px 0 #dae7fb}
-.die-button.manual-die.editing .pip{background:var(--blue)}
-.die-button.manual-die:disabled{cursor:default}
-.manual-input{border-top:1px solid #eef2f7;margin-top:15px;padding-top:13px}
-.manual-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.manual-heading span{font-size:10px;font-weight:760;color:#8291a5;letter-spacing:.07em}
-.manual-heading button{border:0;background:none;padding:5px 0;color:#7391b9;font-size:11px;font-weight:630}
-.manual-heading button:disabled{opacity:.35}
-.manual-choices{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin-top:8px}
-.manual-choice{height:46px;min-width:0;border-radius:11px;border:1px solid #e0e8f4;background:#f2f6fd;color:#286cbd;font-size:19px;font-weight:740;box-shadow:0 2px 0 #edf1f7;font-variant-numeric:tabular-nums}
-.manual-choice:active:not(:disabled){background:#deecff}
-@media(max-height:740px){.mode-setup{margin-top:12px}.mode-option{min-height:93px;padding:11px}.mode-choice-head{margin-bottom:5px}.manual-input{margin-top:10px;padding-top:9px}}
-@media(max-width:370px){.mode-options{gap:7px}.mode-option{padding:10px}.manual-choices{gap:5px}.manual-choice{height:43px}}
+
+/* Touch-first scoreboard for the mode with real dice */
+.mode-icon{display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#edf3ff;color:#4b7fd0}
+.mode-icon svg{width:19px;height:19px}
+.mode-option.selected .mode-icon{background:#dfebff;color:var(--blue)}
+.mode-option{gap:0;min-height:110px}
+.mode-option strong{font-size:13px}
+.mode-option small{font-size:10px}
+.physical-turn{padding:15px 17px 14px}
+.physical-turn .dice-row,.physical-turn .dice-hint,.physical-turn .throw-progress,.physical-turn .throw-count{display:none!important}
+.physical-turn .turn-topline h2{max-width:none}
+.physical-turn .physical-instruction{display:block;color:#8492a6;font-size:12px;line-height:1.55;margin:8px 0 0}
+.score-section.physical-score{margin-top:17px}
+.score-section.physical-score .score-titlebar{margin-bottom:12px}
+.physical-score .score-row{padding:0;min-height:0;border:0}
+.manual-score-row{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px;padding:11px 15px;width:100%;border:0;border-bottom:1px solid #eff1f5;text-align:left;background:#fff;color:var(--ink)}
+.manual-score-row:not(:disabled):active{background:#eef5ff}
+.manual-score-row:disabled{cursor:default}
+.manual-score-row .manual-category{display:flex;flex-direction:column;gap:4px;min-width:0}
+.manual-score-row .cat-name{font-weight:680;font-size:13px}
+.manual-score-row .category-detail{font-size:10px;color:#9aa8b9;font-weight:510}
+.manual-score-row .manual-result{display:flex;align-items:center;gap:9px;color:#2876e7;font-size:17px;font-weight:760;font-variant-numeric:tabular-nums}
+.manual-score-row .manual-result .chevron{color:#9eafc4;font-size:19px;font-weight:400}
+.manual-score-row.scored .manual-result{color:#293b56}
+.manual-score-row.scored.zero .manual-result{color:#adb8c7}
+.manual-score-row.scored .category-detail{display:none}
+.manual-score-row.scored{background:#fff}
+.manual-score-row:disabled .manual-result{opacity:1}
+.manual-score-row.disabled-view .manual-result{color:#b0becf}
+.manual-edit-subtitle{font-size:13px;color:#788a9f;line-height:1.6;margin-bottom:18px}
+.manual-fixed-value{border:1px solid #e6edfb;border-radius:16px;background:#f2f7ff;text-align:center;padding:17px 12px;margin-top:15px}
+.manual-fixed-value strong{display:block;font-size:36px;color:#246dda;letter-spacing:-.07em}
+.manual-fixed-value small{font-size:11px;color:#829bc4}
+.manual-counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.manual-counts button{min-height:58px;border:1px solid #dbe7f8;border-radius:13px;color:#236cd8;background:#f5f9ff;font-size:22px;font-weight:750}
+.manual-counts button:active{background:#ddebff}
+.manual-counts button span{font-size:10px;display:block;color:#869bc0;font-weight:600;margin-top:2px}
+.manual-points-field{display:flex;align-items:center;gap:12px;margin-top:13px}
+.manual-points-field input{width:100%;min-width:0;min-height:60px;border:1.5px solid #dce6f3;border-radius:14px;background:#f7faff;padding:0 17px;font-size:24px;font-weight:700;color:var(--ink);-webkit-appearance:none;appearance:none}
+.manual-points-field span{color:#8fa0b5;font-size:12px;flex:none}
+.manual-score-error{color:#c53f50!important;margin-top:9px!important;font-size:12px!important}
+.manual-strike{width:100%;margin-top:11px;border:0;min-height:44px;background:transparent;color:#8a98a9;font-size:13px;font-weight:650}
+.extra-kniffel-choice{display:flex;align-items:flex-start;gap:11px;border:1px solid #d9e7fa;border-radius:13px;background:#f3f8ff;padding:13px;margin-top:17px;color:#314d79;font-size:12px;line-height:1.5}
+.extra-kniffel-choice input{accent-color:#2675eb;margin:2px 0 0;width:18px;height:18px;flex:none}
+.extra-kniffel-choice strong{display:block;color:#286bd1;font-size:13px}
+.manual-bonus-hint{margin:13px 0 0!important;font-size:12px!important}
+.manual-bonus-summary{margin-top:12px;border-radius:12px;background:#ecf5ff;padding:12px;color:#286bcd;font-size:13px;font-weight:690}
+@media(max-height:740px){.mode-setup{margin-top:12px}.mode-option{min-height:97px;padding:11px}.mode-choice-head{margin-bottom:6px}.manual-score-row{min-height:47px}}
+@media(max-width:370px){.mode-options{gap:7px}.mode-option{padding:11px}.manual-score-row{padding:10px 12px}}

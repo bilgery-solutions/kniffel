@@ -23,6 +23,7 @@
   let setupNames = ['', ''];
   let setupMode = 'digital';
   let currentModal = '';
+  let manualCategory = null;
   let toastTimeout;
   let lastFocused = null;
 
@@ -51,6 +52,11 @@
       game = loaded;
       game.mode = game.mode || 'digital'; // Restore older saved digital-only games.
       game.manualIndex = Number.isInteger(game.manualIndex) ? game.manualIndex : 0;
+      // Old physical-mode saves contained entered die faces. No longer needed.
+      if (game.mode === 'physical') {
+        game.dice = [0,0,0,0,0]; game.kept = [false,false,false,false,false];
+        game.rollCount = 0; game.selectedCategory = null;
+      }
       setupMode = game.mode;
       // The undo snapshot is optional and must never crash loading.
       if (!validSnapshot(loaded.undo)) game.undo = null;
@@ -106,19 +112,17 @@
     persist(); render();
   }
 
-  function diceMarkup(value, index) {
-    const physical = game.mode === 'physical';
-    const kept = !physical && game.kept[index];
-    const canKeep = isPlayersTurn() && (physical || (game.rollCount > 0 && game.rollCount < 3));
+function diceMarkup(value, index) {
+    const kept = game.kept[index];
+    const canKeep = isPlayersTurn() && game.rollCount > 0 && game.rollCount < 3;
     const cells = Array.from({length:9},(_,i) => {
       const hasDot = value === 0 ? i === 4 : PIP_POSITIONS[value].includes(i+1);
       return `<span ${hasDot ? `class="pip${value===0?' ghost':''}"` : ''}></span>`;
     }).join('');
-    const editing = physical && isPlayersTurn() && game.manualIndex === index;
-    return `<button class="die-button${physical?' manual-die':''}${kept?' kept':''}${editing?' editing':''}" type="button" data-die="${index}" aria-label="Würfel ${index+1}: ${value ? value : (physical?'noch nicht eingetragen':'noch nicht geworfen')}${physical?', zum Bearbeiten antippen':kept?', behalten':''}" aria-pressed="${physical?editing:kept}" ${canKeep ? '' : 'disabled'}>${cells}</button>`;
+    return `<button class="die-button${kept?' kept':''}" type="button" data-die="${index}" aria-label="Würfel ${index+1}: ${value ? value : 'noch nicht geworfen'}${kept?', behalten':''}" aria-pressed="${kept}" ${canKeep ? '' : 'disabled'}>${cells}</button>`;
   }
 
-  function renderPlayers() {
+    function renderPlayers() {
     $('player-strip').innerHTML = game.players.map((player, index) => {
       const active = index === game.activeIndex;
       const viewing = index === game.viewIndex;
@@ -128,34 +132,42 @@
     }).join('');
   }
 
-  function renderDice() {
-    $('dice-row').innerHTML = game.dice.map(diceMarkup).join('');
+function renderDice() {
     const physical = game.mode === 'physical';
-    const entered = game.dice.filter(Boolean).length;
-    $('throw-number').innerHTML = physical ? `${entered}<span>/5</span>` : `${game.rollCount}<span>/3</span>`;
-    document.querySelector('.throw-count small').textContent = physical ? 'WÜRFEL' : 'WÜRFE';
+    $('play-card')?.classList.toggle('physical-turn',physical);
+    $('physical-instruction').hidden = !physical;
     const viewing = !isPlayersTurn();
-    $('manual-input').hidden = !physical || viewing || game.phase === 'finished';
-    $('manual-choices').querySelectorAll('button').forEach(button => {button.disabled = viewing || game.phase === 'finished';});
-    $('manual-clear').disabled = viewing || !entered;
-    $('throw-progress').hidden = physical;
-    $('turn-caption').textContent = game.phase === 'finished' ? 'PARTIE BEENDET' : 'AM ZUG';
+    $('turn-caption').textContent = game.phase === 'finished' ? 'PARTIE BEENDET' : physical ? 'PUNKTEBLOCK · EIGENE WÜRFEL' : 'AM ZUG';
     $('turn-title').textContent = game.phase === 'finished' ? 'Geschafft!' : currentPlayer().name;
+    if (physical) return;
+    $('dice-row').innerHTML = game.dice.map(diceMarkup).join('');
+    $('throw-number').innerHTML = `${game.rollCount}<span>/3</span>`;
     let hint;
     if (game.phase === 'finished') hint = 'Alle 13 Felder sind ausgefüllt.';
     else if (viewing) hint = `Du siehst ${visiblePlayer().name}s Punkteblatt.`;
-    else if (physical) hint = entered < 5
-      ? `${entered} von 5 Würfeln erfasst · Augen auswählen, um einzutragen.`
-      : 'Alle Würfel erfasst. Wähle jetzt ein freies Punktefeld.';
     else if (!game.rollCount) hint = 'Bereit für deinen ersten Wurf?';
     else if (game.rollCount === 3) hint = 'Wähle jetzt ein freies Punktefeld.';
     else if (game.kept.every(Boolean)) hint = 'Alle Würfel behalten. Wähle eine Kategorie.';
     else hint = 'Würfel antippen, um sie zu behalten.';
     $('dice-hint').textContent = hint;
-    $('throw-progress').querySelectorAll('i').forEach((el,i) => el.classList.toggle('filled', i<game.rollCount));
+    $('throw-progress').querySelectorAll('i').forEach((el,i) => el.classList.toggle('filled',i<game.rollCount));
+  }
+
+  function manualScoreRow(category,player) {
+    const value=player.scores[category.key];
+    const scored=value!==null;
+    const playable=isPlayersTurn() && !scored;
+    const detail=category.number ? `${category.number} × Anzahl`
+      : ({fullHouse:'25 Punkte',smallStraight:'30 Punkte',largeStraight:'40 Punkte',kniffel:'50 Punkte'})[category.key]
+        || ((category.key==='chance'||category.key==='threeKind'||category.key==='fourKind')?'Augensumme':'');
+    return `<div class="score-row"><button type="button" class="manual-score-row${scored?' scored':''}${value===0?' zero':''}${!playable?' disabled-view':''}" data-category="${category.key}" ${playable?'':'disabled'} aria-label="${esc(category.name)}: ${scored?value+' Punkte eingetragen':'Punkte eintragen'}">
+       <span class="manual-category"><span class="cat-name">${esc(category.name)}</span><span class="category-detail">${detail}</span></span>
+       <span class="manual-result">${scored?value:'+'}${!scored?'<span class="chevron" aria-hidden="true">›</span>':''}</span>
+       </button></div>`;
   }
 
   function scoreRow(category, player, preview) {
+    if (game.mode === 'physical') return manualScoreRow(category,player);
     const value = player.scores[category.key];
     const scored = value !== null;
     const selected = preview && game.selectedCategory === category.key;
@@ -167,10 +179,11 @@
       <button type="button" class="score-choice ${className}" data-category="${category.key}" ${!preview||scored ? 'disabled' : ''} aria-label="${accessible}" aria-pressed="${!!selected}">${shown}</button></div>`;
   }
 
-  function renderScorecard() {
+    function renderScorecard() {
     const player = visiblePlayer();
     const totals = R.totals(player);
     const canPreview = isPlayersTurn() && game.rollCount > 0;
+    document.querySelector('.score-section').classList.toggle('physical-score', game.mode === 'physical');
     const upperPct = Math.min(100, Math.max(0, totals.upper/63*100));
     const upper = R.CATEGORIES.filter(c => c.section === 'upper').map(c => scoreRow(c,player,canPreview)).join('');
     const lower = R.CATEGORIES.filter(c => c.section === 'lower').map(c => scoreRow(c,player,canPreview)).join('');
@@ -201,10 +214,6 @@
       const extra = R.isBonusKniffel(currentPlayer().scores,game.dice) ? ' · +50 Extra-Kniffel' : '';
       label.textContent = `${category.name} · ${points} ${points===1?'Punkt':'Punkte'}${extra}`;
       button.innerHTML = `${points} ${points===1?'Punkt':'Punkte'} eintragen <span aria-hidden="true">✓</span>`;
-    } else if (game.mode === 'physical') {
-      label.textContent = game.rollCount ? 'Tippe auf ein freies Feld im Punkteblatt.' : 'Trage erst die fünf echten Würfelergebnisse ein.';
-      button.textContent = game.rollCount ? 'Kategorie auswählen' : '5 Würfel erfassen';
-      button.disabled = true;
     } else if (game.rollCount === 3) {
       label.textContent = 'Wähle oben ein freies Punktefeld.';
       button.textContent = 'Kategorie auswählen'; button.disabled = true;
@@ -219,7 +228,7 @@
 
   function render() {
     if (!game) { renderSetup(); return; }
-    $('setup-screen').hidden = true; $('game-screen').hidden = false; $('action-dock').hidden = false; $('new-button').hidden = false;
+    $('setup-screen').hidden = true; $('game-screen').hidden = false; $('action-dock').hidden = game.mode === 'physical'; $('new-button').hidden = false;
     const completed = game.players.reduce((sum,player)=>sum+R.totals(player).filled,0);
     const round = Math.min(13,Math.floor(completed/game.players.length)+1);
     $('round-label').textContent = game.phase==='finished' ? 'PARTIE ABGESCHLOSSEN' : `RUNDE ${round} VON 13`;
@@ -255,47 +264,88 @@
     }
   }
 
-  function keep(index) {
-    if (!isPlayersTurn()) return;
-    if (game.mode === 'physical') {
-      game.manualIndex = index;
-      persist(); renderDice();
-      return;
-    }
-    if (game.rollCount===0 || game.rollCount>=3) return;
+function keep(index) {
+    if (!isPlayersTurn() || game.rollCount===0 || game.rollCount>=3) return;
     game.kept[index] = !game.kept[index];
     persist();renderDice();renderDock();
   }
 
-  function enterPhysicalDie(value) {
-    if (!isPlayersTurn() || game.mode !== 'physical' || !Number.isInteger(value) || value < 1 || value > 6) return;
-    const index = game.manualIndex;
-    game.dice[index] = value;
-    const nextEmpty = game.dice.findIndex(n => n === 0);
-    game.manualIndex = nextEmpty >= 0 ? nextEmpty : Math.min(index + 1, 4);
-    game.rollCount = game.dice.every(Boolean) ? 1 : 0;
-    game.selectedCategory = null;
-    game.undo = null;
-    persist(); render();
-  }
-
-  function clearPhysicalDice() {
-    if (!isPlayersTurn() || game.mode !== 'physical') return;
-    game.dice = [0,0,0,0,0];
-    game.manualIndex = 0;
-    game.rollCount = 0;
-    game.selectedCategory = null;
-    game.undo = null;
-    persist(); render();
-  }
-
   function pickCategory(key) {
-    if (!isPlayersTurn() || game.rollCount===0 || !R.KEYS.includes(key) || currentPlayer().scores[key] !== null) return;
+    if (!isPlayersTurn() || !R.KEYS.includes(key) || currentPlayer().scores[key] !== null) return;
+    if (game.mode === 'physical') { openManualScore(key); return; }
+    if (game.rollCount===0) return;
     game.selectedCategory = game.selectedCategory===key ? null : key;
     persist();renderScorecard();renderDock();
   }
 
-  function commit() {
+  function maxPhysicalScore(key) {
+    const category = R.CATEGORIES.find(c=>c.key===key);
+    if (!category) return null;
+    return category.number ? category.number*5 : ({fullHouse:25,smallStraight:30,largeStraight:40,kniffel:50})[key] ?? 30;
+  }
+
+  function validManualPoints(key,value) {
+    const category = R.CATEGORIES.find(c=>c.key===key);
+    if (!category || !Number.isInteger(value)) return false;
+    if (value===0) return true;
+    if (category.number) return value<=5*category.number && value%category.number===0;
+    if (['threeKind','fourKind','chance'].includes(key)) return value>=5 && value<=30;
+    return value===maxPhysicalScore(key);
+  }
+
+  function openManualScore(key) {
+    if (!isPlayersTurn() || game.mode!=='physical' || !R.KEYS.includes(key) || currentPlayer().scores[key]!==null) return;
+    manualCategory=key;
+    openModal('manual');
+  }
+
+  function manualBonusChecked() {
+    return Boolean($('manual-bonus')?.checked);
+  }
+
+  function saveManualScore(rawPoints,bonus) {
+    const key=manualCategory;
+    if (!isPlayersTurn() || game.mode!=='physical' || !key || currentPlayer().scores[key]!==null) return;
+    if (bonus && currentPlayer().scores.kniffel!==50) return;
+    const points=bonus?maxPhysicalScore(key):Number(rawPoints);
+    if (!validManualPoints(key,points)) {
+      const error=$('manual-error');
+      if(error){error.hidden=false;error.textContent='Bitte eine gültige Punktzahl eingeben.';}
+      return;
+    }
+    const player=currentPlayer();
+    const previous=clone({...game,undo:null});
+    player.scores[key]=points;
+    if (bonus) player.bonusKniffels++;
+    game.undo=previous;
+    game.dice=[0,0,0,0,0];game.kept=[false,false,false,false,false];game.rollCount=0;game.selectedCategory=null;
+    if (game.players.every(p=>R.totals(p).filled===13)) {
+      game.phase='finished';game.viewIndex=game.activeIndex;
+      recordHistory();
+    } else {
+      game.activeIndex=(game.activeIndex+1)%game.players.length;game.viewIndex=game.activeIndex;
+    }
+    manualCategory=null;
+    closeModal();persist();render();window.scrollTo({top:0,behavior:'smooth'});
+    if (game.phase==='finished') openModal('results');
+    else showToast(`${points} Punkte${bonus?' + 50 Extra-Kniffel':''} für ${player.name} eingetragen.`);
+  }
+
+  function refreshManualDialog() {
+    if (currentModal!=='manual'||!manualCategory)return;
+    const bonus=manualBonusChecked();
+    const normal=$('manual-normal');
+    const extra=$('manual-extra-summary');
+    if(normal)normal.hidden=bonus;
+    if(extra){
+      extra.hidden=!bonus;
+      extra.textContent=`${maxPhysicalScore(manualCategory)} Punkte + 50 Extra-Kniffel`;
+    }
+    // In bonus mode the main controls are hidden; the dedicated bonus button appears.
+  }
+
+
+    function commit() {
     if (!isPlayersTurn() || !game.rollCount || !game.selectedCategory) return;
     const key = game.selectedCategory;
     const player = currentPlayer();
@@ -325,6 +375,9 @@
     if (game.phase === 'finished') saveHistory(history().filter(item => item.id !== game.id));
     game = game.undo;
     game.undo = null;
+    if (game.mode === 'physical') {
+      game.dice=[0,0,0,0,0];game.kept=[false,false,false,false,false];game.rollCount=0;game.selectedCategory=null;
+    }
     persist();closeModal();render();
     showToast('Letzter Eintrag rückgängig gemacht.');
   }
@@ -347,12 +400,30 @@
   function openModal(type) {
     lastFocused = document.activeElement;
     const content = $('modal-content'); const kicker = $('modal-kicker');
-    if (type==='rules') {
+    if (type==='manual') {
+      if (!manualCategory||!isPlayersTurn()||game.mode!=='physical') return;
+      kicker.textContent='PUNKTE EINTRAGEN · '+esc(currentPlayer().name);
+      const category=R.CATEGORIES.find(c=>c.key===manualCategory);
+      const fixed=['fullHouse','smallStraight','largeStraight','kniffel'].includes(manualCategory);
+      const bonusAllowed=currentPlayer().scores.kniffel===50;
+      const value=maxPhysicalScore(manualCategory);
+      const normal=fixed
+        ? `<div class="manual-fixed-value"><strong>${value}</strong><small>PUNKTE</small></div><button class="primary-button" type="button" data-dialog="manual-fixed">${value} Punkte eintragen</button>`
+        : category.number
+          ? `<div class="manual-counts">${Array.from({length:6},(_,i)=>`<button type="button" data-manual-value="${i*category.number}">${i*category.number}<span>${i===0?'Streichen':i+' × '+category.number}</span></button>`).join('')}</div>`
+          : `<label class="manual-points-field"><input id="manual-points" type="number" inputmode="numeric" min="5" max="30" step="1" autocomplete="off" placeholder="z. B. 23" aria-label="Augensumme eingeben"><span>Punkte</span></label><p class="manual-score-error" id="manual-error" hidden></p><button class="primary-button" type="button" id="manual-confirm" data-dialog="manual-enter">Punkte eintragen</button>`;
+      content.innerHTML=`<h2>${esc(category.name)}</h2>
+        <p class="manual-edit-subtitle">${category.number?'Wie viele '+esc(category.name.toLowerCase())+' hast du gewürfelt?':fixed?'Trage die volle Wertung ein oder streiche das Feld mit 0 Punkten.':'Trage die Summe deiner fünf Würfel ein.'}</p>
+        ${bonusAllowed?`<label class="extra-kniffel-choice"><input type="checkbox" id="manual-bonus"><span><strong>Zusätzlicher Kniffel +50</strong>Nur aktivieren, wenn du erneut fünf Gleiche gewürfelt hast. Die Kategorie erhält ihre Höchstpunktzahl.</span></label>`:''}
+        <div id="manual-normal">${normal}${fixed||!category.number?'<button type="button" data-dialog="manual-zero" class="manual-strike">Feld streichen · 0 Punkte</button>':''}</div>
+        ${bonusAllowed?`<div id="manual-extra-summary" hidden class="manual-bonus-summary"></div><button id="manual-extra-submit" class="primary-button" data-dialog="manual-bonus" type="button" hidden>Extra-Kniffel eintragen</button>`:''}
+        <button type="button" class="secondary-button" data-dialog="close">Abbrechen</button>`;
+    } else if (type==='rules') {
       kicker.textContent='SO FUNKTIONIERT’S';
       const physical = (game ? game.mode : setupMode) === 'physical';
-      content.innerHTML = `<h2>Die Regeln.</h2><p>Jede Person hat 13 Züge und bis zu drei Würfe mit fünf Würfeln pro Zug. ${physical ? 'Mit euren echten Würfeln werft ihr am Tisch. In die App kommen nur die fünf endgültigen Ergebnisse.' : 'In der App kannst du Würfel nach jedem Wurf behalten und die anderen erneut werfen.'}</p>
+      content.innerHTML = `<h2>Die Regeln.</h2><p>Jede Person hat 13 Züge und bis zu drei Würfe mit fünf Würfeln pro Zug. ${physical ? 'Mit euren eigenen Würfeln werft ihr am Tisch. In der App wählt ihr anschließend nur die Kategorie und die Punkte.' : 'In der App kannst du Würfel nach jedem Wurf behalten und die anderen erneut werfen.'}</p>
         <ol class="rule-list">${physical
-        ? '<li>Würfle bis zu dreimal mit deinen echten Würfeln.</li><li>Tippe die fünf Würfel in der App nacheinander ein (1 bis 6). Ein erfasster Würfel kann durch Antippen geändert werden.</li>'
+        ? '<li>Würfle mit den eigenen Würfeln und tippe im Punkteblock auf die gewünschte Kategorie.</li><li>Bei Straße, Full House oder Kniffel sind die Punkte vorausgefüllt. Bei Zahlen und Pasch/Chance wählst du die Anzahl oder gibst die Augensumme ein. Mit 0 kannst du ein Feld streichen.</li>'
         : '<li>Tippe auf <b>Würfeln</b>, um alle fünf Würfel zu werfen.</li><li>Wähle Würfel, die du behalten möchtest, und würfle die anderen erneut. Du darfst auch früher aufhören.</li>'}
         <li>Wähle ein freies Feld im Punkteblatt. Die möglichen Punkte werden dir angezeigt. Tippe anschließend auf <b>Eintragen</b>.</li><li>Erreichst du im oberen Block mindestens <b>63 Punkte</b>, erhältst du <b>35 Bonuspunkte</b>.</li><li>Ein weiterer Kniffel nach einem eingetragenen 50-Punkte-Kniffel bringt <b>50 Extrapunkte</b> und die Höchstpunktzahl in einem beliebigen noch freien Feld.</li></ol>
         <p class="dialog-note">Die App verwendet die Standardwertung der aktuellen Schmidt-Spiele-Anleitung. Full House = 25, kleine Straße = 30, große Straße = 40, Kniffel = 50. Ein Kniffel allein zählt nicht automatisch als Full House. Die strengere Meisterschaftsvariante ist nicht aktiviert.</p>
@@ -406,7 +477,7 @@
   }
 
   function closeModal() {
-    $('modal').hidden=true;currentModal='';document.body.classList.remove('modal-open');
+    $('modal').hidden=true;currentModal='';manualCategory=null;document.body.classList.remove('modal-open');
     if (lastFocused && lastFocused.isConnected && !lastFocused.hidden) lastFocused.focus({preventScroll:true});
   }
 
@@ -445,14 +516,27 @@
     game.viewIndex=Number(button.dataset.view);game.selectedCategory=null;persist();render();
   });
   $('dice-row').addEventListener('click',e=>{const button=e.target.closest('button[data-die]');if(button) keep(Number(button.dataset.die));});
-  $('manual-choices').addEventListener('click',e=>{const button=e.target.closest('button[data-face]');if(button) enterPhysicalDie(Number(button.dataset.face));});
-  $('manual-clear').addEventListener('click',clearPhysicalDice);
   $('scorecard').addEventListener('click',e=>{const button=e.target.closest('button[data-category]');if(button) pickCategory(button.dataset.category);});
   $('modal').addEventListener('click',e=>{if(e.target===$('modal')) closeModal();});
   $('modal-close').addEventListener('click',closeModal);
   $('modal-content').addEventListener('click',e=>{
+    const valueButton=e.target.closest('button[data-manual-value]');
+    if(valueButton){saveManualScore(Number(valueButton.dataset.manualValue),false);return;}
     const button=e.target.closest('button[data-dialog]');if(!button)return;
-    switch(button.dataset.dialog){case 'close':closeModal();break;case 'reset':resetToSetup();break;case 'undo':undo();break;}
+    switch(button.dataset.dialog){
+      case 'close':closeModal();break;
+      case 'reset':resetToSetup();break;
+      case 'undo':undo();break;
+      case 'manual-fixed':saveManualScore(maxPhysicalScore(manualCategory),manualBonusChecked());break;
+      case 'manual-zero':saveManualScore(0,manualBonusChecked());break;
+      case 'manual-enter':saveManualScore($('manual-points')?.value,manualBonusChecked());break;
+      case 'manual-bonus':saveManualScore(maxPhysicalScore(manualCategory),true);break;
+    }
+  });
+  $('modal-content').addEventListener('change',e=>{
+    if (e.target.id!=='manual-bonus') return;
+    refreshManualDialog();
+    $('manual-extra-submit').hidden=!e.target.checked;
   });
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'&&currentModal){e.preventDefault();closeModal();}

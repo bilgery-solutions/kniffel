@@ -8,7 +8,7 @@ Ein modernes, mobiloptimiertes Kniffel-Spiel – ohne Anmeldung, Werbung, Framew
 2. Zwischen einer und acht Personen eintragen; alle spielen abwechselnd auf einem Gerät.
 3. **Würfelmodus wählen:**
    - **Digital:** Bis zu dreimal in der App würfeln und Würfel durch Antippen behalten.
-   - **Eigene Würfel:** Mit fünf echten Würfeln am Tisch bis zu dreimal werfen. Anschließend die fünf endgültigen Augenzahlen in der App eintragen; die App errechnet die Punkte automatisch. Ein Würfel lässt sich jederzeit durch Antippen korrigieren, und **Alle löschen** setzt die Eingabe zurück.
+   - **Eigene Würfel:** Bis zu dreimal mit echten Würfeln würfeln. Dann nur das passende Feld im digitalen Punkteblock antippen: Straße, Full House und Kniffel tragen den festen Wert ein; bei Einsern bis Sechsern die Anzahl wählen und bei Pasch oder Chance die Augensumme eingeben. 0 Punkte streichen ein Feld. Zusätzliche Kniffel werden durch eine ausdrücklich auswählbare +50-Option erfasst.
 4. Eine der 13 Kategorien wählen und die Punkte durch **Eintragen** bestätigen. Einträge können zurückgenommen werden, solange die nächste Person noch keine Würfelwerte eingegeben bzw. noch nicht digital gewürfelt hat.
 5. Nach 13 Zügen pro Person gewinnt der höchste Punktestand.
 
@@ -23,11 +23,11 @@ Ein modernes, mobiloptimiertes Kniffel-Spiel – ohne Anmeldung, Werbung, Framew
 
 ## Features
 
-- Zwei Spielmodi: digitales Würfeln oder automatische Punktewertung mit eigenen physischen Würfeln
+- Zwei Spielmodi: digitale Würfel oder digitaler Kniffel-Block für echte Würfel (ohne Würfelwerteingabe)
 - Pass-and-play für 1–8 Personen auf demselben Smartphone/Tablet
 - Vorschau aller möglichen Punkte und Extra-Kniffel vor dem Eintragen
 - Punktezettel mit automatischen Summen, Bonus-Fortschritt, Spielerwechsel
-- Rückgängig-Funktion für den zuletzt eingetragenen Zug, solange noch niemand neu gewürfelt hat
+- Rückgängig-Funktion für den letzten Eintrag (bei echten Würfeln auch nach dem Spielerwechsel bis zum nächsten Eintrag)
 - Automatische lokale Speicherung der Partie; Fortsetzen nach Schließen/Neuladen
 - Spielerstatistik mit Siegzahl, Spielen, Punktemittelwert und letzten Ergebnissen
 - Ohne Cookies, Tracking, externe Bibliotheken oder Server-Kommunikation
