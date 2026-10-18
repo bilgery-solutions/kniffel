@@ -188,7 +188,9 @@ function renderDice() {
     const upperPct = Math.min(100, Math.max(0, totals.upper/63*100));
     const upper = R.CATEGORIES.filter(c => c.section === 'upper').map(c => scoreRow(c,player,canPreview)).join('');
     const lower = R.CATEGORIES.filter(c => c.section === 'lower').map(c => scoreRow(c,player,canPreview)).join('');
-    $('score-heading').textContent = game.viewIndex === game.activeIndex ? 'Punkteblatt' : `${player.name}s Punkteblatt`;
+    $('score-heading').textContent = game.mode === 'physical'
+      ? (game.viewIndex === game.activeIndex ? `Am Zug: ${player.name}` : `${player.name}s Punkte`)
+      : (game.viewIndex === game.activeIndex ? 'Punkteblatt' : `${player.name}s Punkteblatt`);
     $('current-total').textContent = String(totals.total);
     $('scorecard').innerHTML = `
       <div class="section-bar"><span>OBERER BLOCK</span><span>ZAHLEN SAMMELN</span></div>${upper}

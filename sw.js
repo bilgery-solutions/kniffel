@@ -1,5 +1,5 @@
-const CACHE = 'kniffel-v4';
-const ASSETS = ['./','./index.html','./style.css?v=20261018-4','./rules.js','./app.js?v=20261018-4','./icon.svg','./apple-touch-icon.png','./manifest.webmanifest'];
+const CACHE = 'kniffel-v5';
+const ASSETS = ['./','./index.html','./style.css?v=20261018-5','./rules.js','./app.js?v=20261018-5','./icon.svg','./apple-touch-icon.png','./manifest.webmanifest'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
 });

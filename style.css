@@ -80,3 +80,155 @@ body.modal-open{overflow:hidden}
 
 /* No sticky footer spacing needed in scorekeeper-only mode. */
 .physical-mode .game-screen~.site-footer{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+
+/* Compact full-height scorecard when playing with real dice.
+   It uses the available viewport to give all 13 categories their own row.
+   Short screens scroll instead of hiding controls. Digital dice mode is unchanged. */
+body.physical-mode .shell{
+  height:100dvh;
+  min-height:625px;
+  padding-top:max(9px,env(safe-area-inset-top));
+  padding-bottom:max(6px,env(safe-area-inset-bottom));
+}
+body.physical-mode .masthead{
+  flex:0 0 auto;
+  margin-bottom:6px;
+}
+body.physical-mode .masthead h1{font-size:30px}
+body.physical-mode .icon-button,
+body.physical-mode .new-button{min-height:34px}
+body.physical-mode .icon-button{width:34px;font-size:16px}
+body.physical-mode .new-button{padding:6px 11px;font-size:12px}
+body.physical-mode .game-screen{
+  display:flex;
+  flex:1 1 auto;
+  min-height:0;
+  flex-direction:column;
+}
+body.physical-mode .game-topline{
+  min-height:17px;
+  margin:0 0 5px;
+}
+body.physical-mode .player-strip{
+  flex:0 0 auto;
+  padding:0 0 4px;
+  margin-bottom:0;
+  gap:6px;
+}
+body.physical-mode .player-chip{
+  min-width:94px;
+  max-width:124px;
+  padding:7px 10px 6px;
+  border-radius:11px;
+  gap:1px;
+}
+body.physical-mode .player-chip .chip-name{font-size:11px}
+body.physical-mode .player-chip .chip-score{font-size:19px;line-height:1.06}
+body.physical-mode .player-chip .chip-marker{font-size:8px;min-height:8px}
+body.physical-mode .play-card{display:none!important}
+body.physical-mode .score-section.physical-score{
+  display:flex;
+  flex:1 1 auto;
+  min-height:0;
+  flex-direction:column;
+  margin-top:5px;
+}
+body.physical-mode .score-titlebar{
+  flex:0 0 auto;
+  min-height:28px;
+  margin-bottom:6px;
+  align-items:center;
+}
+body.physical-mode .score-titlebar .eyebrow{display:none}
+body.physical-mode .score-titlebar h2{
+  margin:0;
+  font-size:19px;
+  line-height:1.2;
+}
+body.physical-mode .score-total strong{font-size:22px}
+body.physical-mode .score-total span{font-size:8px}
+body.physical-mode .scorecard{
+  flex:1 1 auto;
+  min-height:435px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border-radius:14px;
+}
+body.physical-mode .section-bar{
+  flex:0 0 auto;
+  min-height:22px;
+  padding:4px 12px;
+  font-size:9px;
+  line-height:1.25;
+}
+body.physical-mode .section-bar span:last-child{font-size:9px}
+body.physical-mode .score-row{
+  flex:1 1 0;
+  min-height:0;
+  border-bottom:1px solid #edf1f5;
+  padding:0;
+}
+body.physical-mode .manual-score-row{
+  width:100%;
+  height:100%;
+  min-height:0;
+  padding:0 12px;
+  border:0;
+  border-radius:0;
+  gap:8px;
+}
+body.physical-mode .manual-score-row .manual-category{gap:0}
+body.physical-mode .manual-score-row .cat-name{font-size:12px;line-height:1.15}
+body.physical-mode .manual-score-row .category-detail{display:none}
+body.physical-mode .manual-score-row .manual-result{
+  font-size:15px;
+  line-height:1;
+  gap:6px;
+}
+body.physical-mode .manual-score-row .manual-result .chevron{font-size:16px}
+body.physical-mode .summary-row{
+  flex:0 0 auto;
+  min-height:27px;
+  padding:4px 12px;
+  font-size:11px;
+  line-height:1.15;
+  gap:5px;
+}
+body.physical-mode .summary-row strong{font-size:13px}
+body.physical-mode .summary-row.bonus-row .bonus-progress{margin-top:3px;height:3px}
+body.physical-mode .summary-row.final-row{
+  min-height:31px;
+  padding:5px 12px;
+  font-size:12px;
+}
+body.physical-mode .summary-row.final-row strong{font-size:19px}
+body.physical-mode .game-bottom-space{display:none}
+body.physical-mode .site-footer{
+  flex:0 0 auto;
+  margin:0;
+  padding:6px 0 1px!important;
+  line-height:1.1;
+}
+@media(max-height:735px){
+  body.physical-mode .shell{
+    min-height:625px;
+    padding-top:max(7px,env(safe-area-inset-top));
+  }
+  body.physical-mode .masthead{margin-bottom:4px}
+  body.physical-mode .masthead h1{font-size:27px}
+  body.physical-mode .game-topline{margin-bottom:3px}
+  body.physical-mode .player-chip{padding:5px 9px 4px}
+  body.physical-mode .player-chip .chip-score{font-size:18px}
+  body.physical-mode .score-section.physical-score{margin-top:3px}
+  body.physical-mode .score-titlebar{margin-bottom:4px;min-height:25px}
+  body.physical-mode .scorecard{min-height:426px}
+  body.physical-mode .summary-row{min-height:24px;padding:3px 11px}
+  body.physical-mode .summary-row.final-row{min-height:28px}
+  body.physical-mode .section-bar{min-height:20px;padding:3px 11px}
+  body.physical-mode .site-footer{padding:3px 0 0!important}
+}
+@media(max-width:355px){
+  body.physical-mode .manual-score-row{padding:0 9px}
+  body.physical-mode .player-chip{min-width:88px}
+}
